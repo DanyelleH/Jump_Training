@@ -10,14 +10,11 @@ class Employee(BaseModel):
     department: str
     salary: float
     status: str
-    created_at: str
+
 
 class EmployeeResponse(Employee):
     id: str
     created_at: datetime.datetime
-
-
-
 
 class EmployeeCreation(BaseModel):
     employee_id: str

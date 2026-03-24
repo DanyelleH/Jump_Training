@@ -10,6 +10,10 @@
     pytest -v {'path to test file'}
     pytest -v ./tests/employees_test.py
     ```
+    improved test cli command
+    ```bash
+    pytest --employee-id=EMP999 --department=HR
+    ```
 4. Schema creation
 5. Model implementation
 6. Controller implementation
