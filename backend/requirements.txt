@@ -1,0 +1,12 @@
+# This file lists the Python dependencies for the backend of the project.
+fastapi
+uvicorn
+pydantic
+pymongo
+pytest
+pytest-asyncio
+httpx
+python-dotenv
+motor
+pydantic[email]
+pydantic-settings
