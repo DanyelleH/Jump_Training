@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.config.database import client, employees_collection
 from app.routes.employee_router import router as employee_router
+import app.routes.user_routes as user_router
 # Importing the context manager for lifespan events startup and shutdown code
 
 @asynccontextmanager
@@ -38,6 +39,7 @@ app=FastAPI(title="Employee Management System API", version="1.0", lifespan=life
 
 # Include employee router
 app.include_router(employee_router, prefix="/employees", tags=["Employees"])
+app.include_router(user_router.router, prefix="/auth")
 
 #Health check endpoint
 @app.get("/health")

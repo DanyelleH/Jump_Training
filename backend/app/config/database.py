@@ -9,3 +9,9 @@ client= MongoClient(os.getenv("MONGO_URI"))
 db=client[os.getenv("MONGO_DB_NAME")]
 
 employees_collection=db["employees"]
+users_collection = db["users"]
+
+ROLES = ["admin", "user"]
+
+def get_db():
+    return db

@@ -1,9 +1,16 @@
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
+from pymongo import MongoClient
+from httpx import AsyncClient
+from app.config.database import get_db
 
-client = TestClient(app)
+import asyncio
 
+# client = TestClient(app)
+
+TEST_DB_NAME = "test_db"
+MONGO_TEST_URI = "mongodb://localhost:27017/"  # Update if your MongoDB URI is different
 
 def pytest_addoption(parser):
     parser.addoption("--employee-id", action="store", default="EMP100")
@@ -34,13 +41,48 @@ def employee_payload(employee_id, department):
 
 
 @pytest.fixture
-def create_employee(employee_payload):
-    # setup
+def create_employee(client, employee_payload):
     client.delete(f"/employees/{employee_payload['employee_id']}")
+
     response = client.post("/employees", json=employee_payload)
     assert response.status_code in [200, 201]
 
-    yield employee_payload  # <-- test runs here
+    yield employee_payload
 
-    # teardown
     client.delete(f"/employees/{employee_payload['employee_id']}")
+
+@pytest.fixture
+def client():
+    with TestClient(app) as c:
+        yield c
+
+@pytest.fixture
+def mongo_client():
+    client = MongoClient(MONGO_TEST_URI)
+    yield client
+    client.close()
+
+# Testing db
+@pytest.fixture(scope="function")
+def test_db(mongo_client):
+    db = mongo_client[TEST_DB_NAME]
+
+    # Clean DB before each test
+    db.users.delete_many({})
+
+    def override_get_db():
+        return db
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    yield db
+
+    # ✅ teardown MUST be directly after yield
+    db.users.delete_many({})
+    app.dependency_overrides.clear()
+
+# @pytest.fixture(scope="session")
+# def event_loop():
+#     loop = asyncio.new_event_loop()
+#     yield loop
+#     loop.close()
