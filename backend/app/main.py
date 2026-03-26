@@ -37,6 +37,16 @@ async def lifespan(app: FastAPI):
 
 app=FastAPI(title="Employee Management System API", version="1.0", lifespan=lifespan)
 
+
+from fastapi.middleware.cors import CORSMiddleware
+# Add CORS middleware to allow requests from frontend (adjust origins as needed)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:5174"],  # or ["*"] for all origins (not recommended for production)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Include employee router
 app.include_router(employee_router, prefix="/employees", tags=["Employees"])
 app.include_router(user_router.router, prefix="/auth")
