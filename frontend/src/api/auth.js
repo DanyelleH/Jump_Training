@@ -1,22 +1,23 @@
 import axios from 'axios'
 
-const API_URL = "http://<EC2_PUBLIC_IP>:8000";
+const API_URL = "http://34.202.165.57:8000";
 const API = axios.create({
-  baseURL: 'http://localhost:8000' || API_URL, // adjust if needed
+  baseURL: 'http://localhost:8000'  // adjust if needed
 })
 
 // LOGIN FUNCTION
-export const loginRequest = async (username, password) => {
-  const formData = new URLSearchParams()
-  formData.append('username', username)
-  formData.append('password', password)
-  formData.append('grant_type', 'password')
-  const response = await API.post(`/auth/login`, formData, {
+export const loginRequest = async (loginPayload) => {
+  console.log('Login payload:', loginPayload)
+  // const formData = new URLSearchParams()
+  // formData.append('username', loginPayload.username)
+  // formData.append('password', loginPayload.password)
+  // formData.append('grant_type', 'password')
+  const response = await API.post(`/auth/login`, loginPayload, {
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
     },
   })
-
+  console.log('Login response:', response.data)
   return response.data
 }
 

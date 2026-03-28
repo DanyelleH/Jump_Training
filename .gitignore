@@ -25,3 +25,6 @@ node_modules/
 crash.log
 # Ignore .DS_Store files (macOS)
 .DS_Store
+lambda_function.zip
+lambda-mongodb
+lambda-mongodb.zip

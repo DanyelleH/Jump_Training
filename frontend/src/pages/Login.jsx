@@ -20,10 +20,10 @@ export default function Login() {
       setError('Password is required')
       return
     }
-    
+    const loginPayload = { username: username, password: password }
 
     try {
-      const data = await loginRequest(username, password)
+      const data = await loginRequest(loginPayload)
 
       // Store JWT
       localStorage.setItem('token', data.access_token)
@@ -59,6 +59,7 @@ export default function Login() {
 
         <button type="submit">Login</button>
       </form>
+      <p>Don't have an account?</p>
       <button onClick={() => navigate('/register')}>Create an account</button>
     </div>
     </>
