@@ -46,13 +46,13 @@ def test_update_employee(client, mock_admin_user, create_employee):
     assert response.status_code == 200
     assert response.json().get("message") == "Employee updated successfully"
 
-# def test_get_employee_by_id(client, mock_normal_user, create_employee):
-#     emp_id = create_employee["employee_id"]
+def test_get_employee_by_id(client, mock_normal_user, create_employee):
+    emp_id = create_employee["employee_id"]
 
-#     response = client.get(f"/employees/{emp_id}")
+    response = client.get(f"/employees/{emp_id}")
 
-#     assert response.status_code == 200
-#     assert response.json()["employee_id"] == emp_id
+    assert response.status_code == 200
+    assert response.json()["employee_id"] == emp_id
 
 def test_get_employees_by_department(client, create_employee, department):
     response = client.get(f"/employees/department/{department}")
