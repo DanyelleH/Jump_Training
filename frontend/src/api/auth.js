@@ -1,7 +1,8 @@
 import axios from 'axios'
 
+const API_URL = "http://<EC2_PUBLIC_IP>:8000";
 const API = axios.create({
-  baseURL: 'http://localhost:8000', // adjust if needed
+  baseURL: 'http://localhost:8000' || API_URL, // adjust if needed
 })
 
 // LOGIN FUNCTION
