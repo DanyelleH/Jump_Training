@@ -1,10 +1,11 @@
+from app.util import utils
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 from pymongo import MongoClient
 from httpx import AsyncClient
 from app.config.database import get_db
-
+from app.util.utils import get_current_user
 import asyncio
 
 # client = TestClient(app)
@@ -41,7 +42,7 @@ def employee_payload(employee_id, department):
 
 
 @pytest.fixture
-def create_employee(client, employee_payload):
+def create_employee(client, employee_payload, mock_admin_user):  # ✅ ADD THIS
     client.delete(f"/employees/{employee_payload['employee_id']}")
 
     response = client.post("/employees", json=employee_payload)
@@ -52,7 +53,7 @@ def create_employee(client, employee_payload):
     client.delete(f"/employees/{employee_payload['employee_id']}")
 
 @pytest.fixture
-def client():
+def client(test_db):
     with TestClient(app) as c:
         yield c
 
@@ -70,8 +71,8 @@ def test_db(mongo_client):
     # Clean DB before each test
     db.users.delete_many({})
 
-    def override_get_db():
-        return db
+    async def override_get_db():
+        yield db
 
     app.dependency_overrides[get_db] = override_get_db
 
@@ -86,3 +87,24 @@ def test_db(mongo_client):
 #     loop = asyncio.new_event_loop()
 #     yield loop
 #     loop.close()
+
+
+@pytest.fixture
+def mock_admin_user():
+    def override():
+        return {"username": "admin", "role": "admin"}
+
+    app.dependency_overrides[utils.get_current_user] = override
+    yield
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def mock_normal_user():
+    def override():
+        return {"username": "testuser", "role": "user"}
+
+    app.dependency_overrides[get_current_user] = override
+    yield
+    app.dependency_overrides.clear()
+

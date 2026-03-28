@@ -17,3 +17,9 @@ class UserCreate(User):
 class UserResponse(User):
     id: str
     activitylog: List[ActivityLog] = []
+
+from pydantic import BaseModel
+
+class UserLogin(BaseModel):
+    username: str
+    password: str

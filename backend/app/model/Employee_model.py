@@ -1,6 +1,6 @@
 # Query the database for employee information
 from app.config.database import employees_collection
-from app.schema.Employee_schema import Employee, EmployeeResponse
+from app.schema.employee_schema import Employee, EmployeeResponse
 
 def get_all_employees():
     # get all fields except the MongoDB _id field

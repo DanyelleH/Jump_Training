@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.controller.employee_controller import create_employee, fetch_all_employees, remove_employee, update_employee, access_employee, get_employees_by_department
-from app.schema.Employee_schema import Employee, EmployeeCreation
+from app.schema.employee_schema import Employee, EmployeeCreation
 
 import datetime
 

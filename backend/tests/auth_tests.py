@@ -8,15 +8,19 @@ from app.util.utils import create_access_token, hash_password
 # Helper Functions
 # ---------------------------
 
-def create_user(db, username="testuser", password="StrongPass123!", role="user"):
-    user = {
-        "username": username,
-        "email": f"{username}@test.com",
-        "password": hash_password(password),
-        "role": role,
-    }
-    db.users.insert_one(user)
-    return user
+@pytest.fixture
+def create_user(test_db):
+    def _create_user(username="testuser", password="StrongPass123!", role="user"):
+        user = {
+            "username": username,
+            "email": f"{username}@test.com",
+            "password": hash_password(password),
+            "role": role,
+        }
+        test_db.users.insert_one(user)
+        return user
+
+    return _create_user
 
 
 # ---------------------------
@@ -42,8 +46,8 @@ def test_register_user_success(client, test_db):
     assert user["activitylog"][0]["action"] == "User registered"
 
 
-def test_register_duplicate_username_returns_409(client, test_db):
-    create_user(test_db, username="dupuser")
+def test_register_duplicate_username_returns_409(client, create_user):
+    create_user(username="dupuser")
 
     response = client.post("/auth/register", json={
         "username": "dupuser",
@@ -54,26 +58,25 @@ def test_register_duplicate_username_returns_409(client, test_db):
 
     assert response.status_code == 409
 
+def test_login_success_returns_jwt(client, create_user):
+    create_user(username="loginuser")
 
-def test_login_success_returns_jwt(client, test_db):
-    create_user(test_db, username="loginuser", password="StrongPass123!")
-
-    response = client.post("/auth/login", data={
+    response = client.post("/auth/login", json={
         "username": "loginuser",
         "password": "StrongPass123!"
     })
 
     assert response.status_code == 200
-    body = response.json()
 
+    body = response.json()
     assert "access_token" in body
     assert body["token_type"] == "bearer"
 
 
-def test_login_wrong_password_returns_401(client, test_db):
-    create_user(test_db, username="user1", password="CorrectPass123!")
+def test_login_wrong_password_returns_401(client, create_user):
+    create_user(username="user1", password="CorrectPass123!")
 
-    response = client.post("/auth/login", data={
+    response = client.post("/auth/login", json={
         "username": "user1",
         "password": "WrongPass"
     })
@@ -84,19 +87,18 @@ def test_login_wrong_password_returns_401(client, test_db):
 
 
 def test_login_nonexistent_user_returns_401(client):
-    response = client.post("/auth/login", data={
+    response = client.post("/auth/login", json={
         "username": "nouser",
         "password": "whatever"
     })
-
 
     assert response.status_code == 401
     assert response.json()["detail"] == "Invalid credentials"
 
 
 
-def test_admin_route_with_user_role_returns_403(client, test_db):
-    create_user(test_db, username="normaluser", role="user")
+def test_admin_route_with_user_role_returns_403(client, create_user):
+    create_user(username="normaluser", role="user")
 
     token = create_access_token({
         "username": "normaluser",

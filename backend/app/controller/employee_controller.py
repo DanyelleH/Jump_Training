@@ -1,7 +1,7 @@
 # Controller function for employee related operations / business logic
-from app.model.Employee_model import get_all_employees
-from app.schema.Employee_schema import Employee ,EmployeeCreation
-from app.model.Employee_model import add_employee, delete_employee, get_employee_by_id, update_employee_in_db
+from app.model.employee_model import get_all_employees
+from app.schema.employee_schema import Employee ,EmployeeCreation
+from app.model.employee_model import add_employee, delete_employee, get_employee_by_id, update_employee_in_db
 import datetime
 
 # GET request for all employees

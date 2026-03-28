@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status
-from fastapi.security import OAuth2PasswordRequestForm
 from app.controller.user_controller import register_user, login_user
-from app.schema.user_schema import UserCreate
+from app.schema.user_schema import UserCreate, UserLogin
 from app.util.utils import role_required
 from app.config.database import get_db
 
@@ -13,8 +12,8 @@ def register(user: UserCreate, db=Depends(get_db)):
 
 
 @router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db=Depends(get_db)):
-    return login_user(form_data.username, form_data.password, db)
+def login(user: UserLogin, db=Depends(get_db)):
+    return login_user(user.username, user.password, db)
 
 #admin only route example
 @router.get("/admin-dashboard")
