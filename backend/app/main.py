@@ -39,7 +39,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # Add CORS middleware to allow requests from frontend (adjust origins as needed)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000", "http://localhost:5173", "http://localhost:5174"],  # or ["*"] for all origins (not recommended for production)
+    allow_origins=["http://localhost:5173", "http://localhost:5174"],  # or ["*"] for all origins (not recommended for production)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

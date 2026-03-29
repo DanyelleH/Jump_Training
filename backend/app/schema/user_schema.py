@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from datetime import datetime
 
+
 class ActivityLog(BaseModel):
     action: str
     timestamp: datetime
@@ -17,8 +18,6 @@ class UserCreate(User):
 class UserResponse(User):
     id: str
     activitylog: List[ActivityLog] = []
-
-from pydantic import BaseModel
 
 class UserLogin(BaseModel):
     username: str

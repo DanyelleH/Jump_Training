@@ -31,4 +31,4 @@ def login_user(username: str, password: str, db):
 
     add_activity(db, username, "User logged in")
 
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "role": user["role"]}

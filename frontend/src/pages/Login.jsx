@@ -27,6 +27,7 @@ export default function Login() {
 
       // Store JWT
       localStorage.setItem('token', data.access_token)
+      localStorage.setItem('role', data.role)
      
       // Redirect
       navigate('/home')
