@@ -41,14 +41,17 @@ export default function Register() {
     }
   }
 
-    return (    
-    <div className="register-container">
-      <h2>Register</h2>
+    return (
+  <div className="login-page">
+    <div className="login-card">
+      <h2 className="login-title">Create Account</h2>
 
-      {error && <p className="text-red-500">{error}</p>}
-        {successMessage && <p className="text-green-500">{successMessage}</p>}
-      <form className="register-form" onSubmit={handleSubmit}>
+      {error && <p className="login-error">{error}</p>}
+      {successMessage && <p className="login-success">{successMessage}</p>}
+
+      <form className="login-form" onSubmit={handleSubmit}>
         <input
+          className="login-input"
           type="text"
           placeholder="Email"
           value={email}
@@ -56,22 +59,36 @@ export default function Register() {
         />
 
         <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+          className="login-input"
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <input
+          className="login-input"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button type="submit">Register</button>
+        <button className="login-button" type="submit">
+          Register
+        </button>
       </form>
-      <button onClick={() => navigate('/')}>Already have an account? Login</button>
+
+      <div className="login-footer">
+        <p>Already have an account?</p>
+        <button
+          className="login-secondary-button"
+          onClick={() => navigate('/')}
+        >
+          Login
+        </button>
+      </div>
     </div>
-  )
+  </div>
+)
 }

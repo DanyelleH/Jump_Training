@@ -37,14 +37,15 @@ export default function Login() {
   }
 
   return (
-    <>
-    <div className="login-container">
-      <h2>Login</h2>
+  <div className="login-page">
+    <div className="login-card">
+      <h2 className="login-title">Welcome Back</h2>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="login-error">{error}</p>}
 
       <form className="login-form" onSubmit={handleSubmit}>
         <input
+          className="login-input"
           type="text"
           placeholder="Username"
           value={username}
@@ -52,17 +53,28 @@ export default function Login() {
         />
 
         <input
+          className="login-input"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button type="submit">Login</button>
+        <button className="login-button" type="submit">
+          Login
+        </button>
       </form>
-      <p>Don't have an account?</p>
-      <button onClick={() => navigate('/register')}>Create an account</button>
+
+      <div className="login-footer">
+        <p>Don't have an account?</p>
+        <button
+          className="login-secondary-button"
+          onClick={() => navigate('/register')}
+        >
+          Create an account
+        </button>
+      </div>
     </div>
-    </>
-  )
+  </div>
+)
 }

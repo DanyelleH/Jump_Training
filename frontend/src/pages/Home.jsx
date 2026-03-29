@@ -24,7 +24,7 @@ export default function Home() {
     salary: '',
     status: ''
   })
-
+  const [openSection, setOpenSection] = useState(null)
   const [updateName, setUpdateName] = useState('')
   const [selectedField, setSelectedField] = useState('')
   const [updateData, setUpdateData] = useState({})
@@ -36,6 +36,9 @@ export default function Home() {
   'salary',
   'status'
 ]
+const toggleSection = (section) => {
+  setOpenSection(prev => (prev === section ? null : section))
+}
   const handleAddField = () => {
   if (!selectedField) return
 
@@ -168,111 +171,192 @@ const handleRemoveField = (field) => {
   }
 
   return (
-    <div>
-      <h2>Employee Dashboard</h2>
+  <div className="login-page">
+    <div className="dashboard-container">
 
-      {error && <p>{error}</p>}
+      <h2 className="dashboard-title">Employee Dashboard</h2>
 
-      {/* 🔍 Search Section */}
-      <div>
-        <input
-          placeholder="Employee ID"
-          value={employeeId}
-          onChange={(e) => setEmployeeId(e.target.value)}
-        />
-        <button onClick={handleSearchById}>Search by ID</button>
-      </div>
+      {error && <p className="login-error">{error}</p>}
 
-      <div>
-        <input
-          placeholder="Department"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-        />
-        <button onClick={handleSearchByDept}>Search by Department</button>
-      </div>
+      {/* 🔍 SEARCH SECTION */}
+      <div className="dashboard-card">
+        <div
+          className="accordion-header"
+          onClick={() => toggleSection('search')}
+        >
+          <h3>Search Employees</h3>
+          <span>{openSection === 'search' ? '−' : '+'}</span>
+        </div>
 
-      {/* ➕ Admin Actions */}
-      {role === 'admin' && (
-        <div>
-          <h3>Add Employee</h3>
-
-          <input name="employee_id" placeholder="Employee ID" onChange={handleChange} />
-          <input name="name" placeholder="Name" onChange={handleChange} />
-          <input name="email" placeholder="Email" onChange={handleChange} />
-          <input name="position" placeholder="Position" onChange={handleChange} />
-          <input name="department" placeholder="Department" onChange={handleChange} />
-          <input name="salary" placeholder="Salary" onChange={handleChange} />
-          <input name="status" placeholder="Status" onChange={handleChange} />
-
-          <button onClick={handleAddEmployee}>Add Employee</button>
-
-         <h3>Update Employee</h3>
-
-            <input
-              placeholder="Employee ID"
-              value={employeeId}
-              onChange={(e) => setEmployeeId(e.target.value)}
-            />
-
-            {/* Dropdown */}
-            <select
-              value={selectedField}
-              onChange={(e) => setSelectedField(e.target.value)}
-            >
-              <option value="">Select field</option>
-              {updatableFields.map((field) => (
-                <option key={field} value={field}>
-                  {field}
-                </option>
-              ))}
-            </select>
-
-            <button onClick={handleAddField}>Add Field</button>
-
-            {/* Dynamic Fields */}
-            <div style={{ marginTop: '10px' }}>
-              {Object.keys(updateData).map((field) => (
-                <div key={field} style={{ marginBottom: '8px' }}>
-                  <label style={{ marginRight: '8px' }}>{field}:</label>
-
-                  <input
-                    value={updateData[field]}
-                    onChange={(e) => handleFieldChange(field, e.target.value)}
-                  />
-
-                  <button onClick={() => handleRemoveField(field)}>
-                    Remove
-                  </button>
-                </div>
-              ))}
+        {openSection === 'search' && (
+          <div className="accordion-content">
+            <div className="form-row">
+              <input
+                className="login-input"
+                placeholder="Employee ID"
+                value={employeeId}
+                onChange={(e) => setEmployeeId(e.target.value)}
+              />
+              <button className="login-button" onClick={handleSearchById}>
+                Search by ID
+              </button>
             </div>
 
-            <button onClick={handleUpdate}>Update</button>
+            <div className="form-row">
+              <input
+                className="login-input"
+                placeholder="Department"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+              />
+              <button className="login-button" onClick={handleSearchByDept}>
+                Search by Department
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ➕ ADD SECTION */}
+      {role === 'admin' && (
+        <div className="dashboard-card">
+          <div
+            className="accordion-header"
+            onClick={() => toggleSection('add')}
+          >
+            <h3>Add Employee</h3>
+            <span>{openSection === 'add' ? '−' : '+'}</span>
+          </div>
+
+          {openSection === 'add' && (
+            <div className="accordion-content">
+              <div className="form-grid">
+                {Object.keys(newEmployee).map((field) => (
+                  <input
+                    key={field}
+                    name={field}
+                    placeholder={field}
+                    className="login-input"
+                    onChange={handleChange}
+                  />
+                ))}
+              </div>
+
+              <button className="login-button" onClick={handleAddEmployee}>
+                Add Employee
+              </button>
+            </div>
+          )}
         </div>
       )}
 
-      {/* 📋 Employee List */}
-      <ul>
-        {employees.map((emp) => (
-          <li key={emp.employee_id}>
-            <strong>{emp.name}</strong> ({emp.employee_id}) <br />
-            {emp.email} | {emp.position} | {emp.department} <br />
-            ${emp.salary} | {emp.status}
+      {/* ✏️ UPDATE SECTION */}
+      {role === 'admin' && (
+        <div className="dashboard-card">
+          <div
+            className="accordion-header"
+            onClick={() => toggleSection('update')}
+          >
+            <h3>Update Employee</h3>
+            <span>{openSection === 'update' ? '−' : '+'}</span>
+          </div>
 
-            {role === 'admin' && (
-              <button onClick={() => handleDelete(emp.employee_id)}>
-                Delete
+          {openSection === 'update' && (
+            <div className="accordion-content">
+              <input
+                className="login-input"
+                placeholder="Employee ID"
+                value={employeeId}
+                onChange={(e) => setEmployeeId(e.target.value)}
+              />
+
+              <div className="form-row">
+                <select
+                  className="login-input"
+                  value={selectedField}
+                  onChange={(e) => setSelectedField(e.target.value)}
+                >
+                  <option value="">Select field</option>
+                  {updatableFields.map((field) => (
+                    <option key={field} value={field}>
+                      {field}
+                    </option>
+                  ))}
+                </select>
+
+                <button className="login-button" onClick={handleAddField}>
+                  Add Field
+                </button>
+              </div>
+
+              <div className="update-fields">
+                {Object.keys(updateData).map((field) => (
+                  <div key={field} className="update-row">
+                    <input
+                      className="login-input"
+                      value={updateData[field]}
+                      onChange={(e) =>
+                        handleFieldChange(field, e.target.value)
+                      }
+                    />
+                    <button
+                      className="danger-button"
+                      onClick={() => handleRemoveField(field)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button className="login-button" onClick={handleUpdate}>
+                Update Employee
               </button>
-            )}
-          </li>
-        ))}
-      </ul>
-      <button onClick={() => {
-        localStorage.removeItem('token')
-        localStorage.removeItem('role')
-        window.location.href = '/'
-      }}>Logout</button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 📋 EMPLOYEE LIST */}
+      <div className="dashboard-card">
+        <h3>Employees</h3>
+
+        <div className="employee-list">
+          {employees.map((emp) => (
+            <div key={emp.employee_id} className="employee-card">
+              <div>
+                <strong>{emp.name}</strong>
+                <p>{emp.employee_id}</p>
+              </div>
+
+              <p>{emp.email}</p>
+              <p>{emp.position} • {emp.department}</p>
+              <p>${emp.salary} • {emp.status}</p>
+
+              {role === 'admin' && (
+                <button
+                  className="danger-button"
+                  onClick={() => handleDelete(emp.employee_id)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button
+        className="logout-button"
+        onClick={() => {
+          localStorage.removeItem('token')
+          localStorage.removeItem('role')
+          window.location.href = '/'
+        }}
+      >
+        Logout
+      </button>
     </div>
+  </div>
   )
 }
