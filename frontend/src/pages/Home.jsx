@@ -49,6 +49,7 @@ const toggleSection = (section) => {
 
   setSelectedField('')
 }
+
 const handleFieldChange = (field, value) => {
   setUpdateData(prev => ({
     ...prev,
@@ -60,13 +61,23 @@ const handleRemoveField = (field) => {
   delete updated[field]
   setUpdateData(updated)
 }
-  const role = localStorage.getItem('role')
 
-  // 🔒 Block guests
+let role = null
+
+try {
+  const token = localStorage.getItem('token')
+
+  if (token) {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    role = payload.role
+  }
+} catch (err) {
+  console.error('Invalid token', err)
+}
+//   // 🔒 Block guests
   if (!role) {
     return <p>Unauthorized</p>
   }
-
   // 📦 Load all employees
   useEffect(() => {
     async function fetchData() {

@@ -15,7 +15,7 @@ import Register from '../pages/Register'
 import { BrowserRouter } from 'react-router-dom'
 
 // Mock axios
-vi.mock('axios')
+vi.mock('axios') 
 
 // ...existing code...
 
